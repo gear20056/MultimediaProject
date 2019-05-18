@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spacecraft Surviver</title>
+    <script type="text/javascript" src="./simpleGame.js"></script>
+    <script type="text/javascript">
+        var scene;
+        var spacecraft;
+        var score;
+        var comet;
+
+        function Ship(){
+            tShip = new Sprite(scene, "./assets/imgs/ship.png", 30, 30);
+            tShip.set(2.5);
+            // tShip.checkKeys = function(){
+            //     if(keysDown[K_LEFT]){
+            //         this.
+            //     }
+            //     if(keysDown[K_RIGHT]){
+            //         this.
+            //     }
+            //     if(keysDown[K_UP]){
+            //         this.
+            //     }
+            //     if(keysDown[K_DOWN]){
+            //         this.
+            //     }
+            // }
+            return tShip;
+        }
+
+        function init(){
+            scene = new Scene();
+            ship = new Ship();
+            scene.setBG("black");
+
+            scene.start();
+        }
+        function update(){
+            scene.clear();
+
+            //handle events here
+            // ship.checkKeys();
+
+            //update all the sprites
+            ship.update();
+        }
+    </script>
+</head>
+<body onload = "init()">
+</body>
+</html>
