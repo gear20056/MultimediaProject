@@ -3,51 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <title>Spacecraft Surviver</title>
+    <style type="text/css">
+        #score {
+            position: absolute;
+            font-size: 2em;
+            color: green;
+            left: 50px;
+            top: 30px;
+            width: 200px;
+            border: 0px;
+            padding: .25em;
+            z-index: 999;
+        } 
+        #output {
+            position: absolute;
+            font-size: 2em;
+            color: green;
+            left: 600px;
+            top: 30px;
+            width: 200px;
+            border: 0px;
+            padding: .25em;
+            z-index: 999;
+        }
+    </style>
     <script type="text/javascript" src="./simpleGame.js"></script>
     <script type="text/javascript">
         var scene;
         var spacecraft;
         var score;
         var comet;
+        var enemy;
+        var score = 0;
+        var timer;
+        var NUM_Enemy = 5;
+
+        function Enemy(){
+        tenemy= new Sprite(scene, "./assets/imgs/enemy_ship.png", 80, 80);
+        tenemy.setSpeed(0);
+        tenemy.setPosition(400, 420);
+
+        tenemy.reset = function(){
+            this.setDY(2);
+            this.setDX((Math.random() * 10) - 5);
+            newX = Math.random() * scene.width;
+            this.setPosition(newX, 50);
+        } // end reset
+
+
+        tenemy.reset();
+        return tenemy;
+        }
+        function Bullet(owner){
+        //owner is the tank owning this bullet
+        
+        tBullet = new Sprite(scene, "./assets/imgs/cartoon-bullet-png.png", 100, 100);
+        
+        tBullet.owner = owner;
+        tBullet.hide();
+        tBullet.setBoundAction(DIE);
+        
+        tBullet.fire = function(){
+            //begin at center of my tank
+            //pointing in tank turret's direction
+            this.setPosition(this.owner.x, this.owner.y);
+            //this.setMoveAngle(this.owner.turret.getImgAngle());
+            this.setSpeed(20);
+            this.show();
+        } // end fire
+        
+        tBullet.checkcoll = function (){
+            for (i = 0; i < NUM_Enemy; i++){
+            //dist = cactus[i].collidesWith(dino);
+                if(enemy[i].collidesWith(tBullet) ){
+                        enemy[i].reset();
+                        score += 5;
+                }    
+            }
+        }
+        tBullet.checkGravity = function(){
+            this.addVector(360, 1);
+        } // end checkGravity
+        
+        return tBullet;
+    } // end bullet
 
         function Ship(){
-            tShip = new Sprite(scene, "./assets/imgs/ship.png", 30, 30);
-            tShip.set(2.5);
-            // tShip.checkKeys = function(){
-            //     if(keysDown[K_LEFT]){
-            //         this.
-            //     }
-            //     if(keysDown[K_RIGHT]){
-            //         this.
-            //     }
-            //     if(keysDown[K_UP]){
-            //         this.
-            //     }
-            //     if(keysDown[K_DOWN]){
-            //         this.
-            //     }
-            // }
+            tShip = new Sprite(scene, "./assets/imgs/ship.png", 100, 100);
+            tShip.setSpeed(0);
+            tShip.setPosition(400,500);
+            tShip.setImgAngle(360)
+            tShip.bullet = new Bullet(tShip);
+
+             tShip.checkKeys = function(){
+                 if(keysDown[K_LEFT]){
+                    this.x -= 25;
+                 }
+                if(keysDown[K_RIGHT]){
+                    this.x += 25;
+                }
+               if (keysDown[K_SPACE]){
+                    this.bullet.fire();
+
+                }
+                this.bullet.checkcoll();
+                this.bullet.checkGravity();
+                this.bullet.update();
+             }
+
             return tShip;
         }
 
+        function makeEnemy(){
+        enemy = new Array(NUM_Enemy);
+        for(i = 0;i < NUM_Enemy; i++){
+            enemy[i] = new Enemy();
+        }
+
+        }
+
+        function updatEnemy(){
+            for (i = 0; i < NUM_Enemy; i++){
+                enemy[i].update();
+            } 
+        }
+
+        function updatescore(){
+            showscore = document.getElementById("score");
+            showscore.innerHTML = "SCORE : " + score;
+
+        }
         function init(){
             scene = new Scene();
             ship = new Ship();
             scene.setBG("black");
-
+            makeEnemy();
+            timer = new Timer();
+            timer.reset();
             scene.start();
         }
         function update(){
+
             scene.clear();
 
             //handle events here
             // ship.checkKeys();
-
+            updatEnemy();
             //update all the sprites
+            ship.checkKeys();
             ship.update();
+            updatescore();
+            currentTime = timer.getElapsedTime();
+            output.innerHTML = "Timer : " + currentTime;
+            if(currentTime >= 60){
+                scene.stop();
+                alert("Score : " + score);
+                location.reload();
+            }
         }
     </script>
 </head>
 <body onload = "init()">
+    <div id="output">empty</div>
+    <div id = "score"></div>
+
 </body>
 </html>
