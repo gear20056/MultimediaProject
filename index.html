@@ -39,25 +39,25 @@
         var NUM_Enemy = 5;
 
         function Enemy(){
-        tenemy= new Sprite(scene, "./assets/imgs/enemy_ship.png", 80, 80);
-        tenemy.setSpeed(0);
-        tenemy.setPosition(400, 420);
+            tenemy= new Sprite(scene, "./assets/imgs/meteor.png", 80, 80);
+            tenemy.setSpeed(0);
+            tenemy.setPosition(400, 420);
 
-        tenemy.reset = function(){
-            this.setDY(2);
-            this.setDX((Math.random() * 10) - 5);
-            newX = Math.random() * scene.width;
-            this.setPosition(newX, 50);
-        } // end reset
+            tenemy.reset = function(){
+                this.setDY(2);
+                this.setDX((Math.random() * 10) - 5);
+                newX = Math.random() * scene.width;
+                this.setPosition(newX, 50);
+            } // end reset
 
 
-        tenemy.reset();
-        return tenemy;
+            tenemy.reset();
+            return tenemy;
         }
         function Bullet(owner){
         //owner is the tank owning this bullet
         
-        tBullet = new Sprite(scene, "./assets/imgs/cartoon-bullet-png.png", 100, 100);
+        tBullet = new Sprite(scene, "./assets/imgs/laser.png", 10, 50);
         
         tBullet.owner = owner;
         tBullet.hide();
@@ -81,8 +81,9 @@
                 }    
             }
         }
+        
         tBullet.checkGravity = function(){
-            this.addVector(360, 1);
+            this.addVector(360, 3);
         } // end checkGravity
         
         return tBullet;
@@ -104,11 +105,11 @@
                 }
                if (keysDown[K_SPACE]){
                     this.bullet.fire();
-
                 }
-                this.bullet.checkcoll();
                 this.bullet.checkGravity();
                 this.bullet.update();
+                this.bullet.checkcoll();
+
              }
 
             return tShip;
